@@ -6,9 +6,14 @@ import yaml
 APPS_DIR = "apps"
 
 IGNORE_LIST = ["auxtel", "cluster-config", "hexapodsim", "maintel", "mtm1m3", "mtm2",
-               "obssys", "ospl-config", "ospl-daemon"]
+               "obssys", "ospl-config"]
 
 def main(opts):
+    if opts.update_m1m3:
+        IGNORE_LIST.remove("mtm1m3")
+    if opts.update_m2:
+        IGNORE_LIST.remove("mtm2")
+
     print(f"Updating {opts.update_key} to {opts.update_value} for {opts.env} environment")
     apps = pathlib.PosixPath(APPS_DIR)
     dirlist = list(apps.iterdir())
@@ -19,7 +24,7 @@ def main(opts):
         if opts.debug:
             print(appdir)
 
-        if appdir.name == "kafka-producers":
+        if appdir.name == "kafka-producers" or appdir.name == "ospl-daemon":
             top_tag = appdir.name
         else:
             top_tag = "csc"
@@ -53,6 +58,7 @@ if __name__ == '__main__':
     description = ["Update parameter for a given environment."]
     description.append("Run the script in the top-level argocd-csc directory.")
     description.append("Do not include the top-level section in key specification.")
+    description.append("If the key does not appear in the files, it will be added.")
     parser = argparse.ArgumentParser(description=" ".join(description),
                                      formatter_class=argparse.ArgumentDefaultsHelpFormatter)
     parser.add_argument("update_key", help="Key to update. Uses dot formatting for sections.")
@@ -61,6 +67,8 @@ if __name__ == '__main__':
                         help="Pass the environment to change.")
     parser.add_argument("-d", "--debug", dest="debug", action="store_true",
                         help="Print intermediate information")
+    parser.add_argument("--update-m1m3", action="store_true", help="Allow M1M3 to be updated.")
+    parser.add_argument("--update-m2", action="store_true", help="Allow M2 to be updated.")
     args = parser.parse_args()
 
     main(args)
