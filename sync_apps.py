@@ -8,11 +8,10 @@ def main():
         print(f"{' '.join(cmd)}")
         output = hp.run_cmd(cmd)
         print(output)
-        if app == "kafka-producers":
-            print("When the kafka-producers are running, type go to continue.")
-            choice = ""
-            while choice != "go":
-                choice = input("Ready?:")
+        print(f"When the {app} are running, type go to continue.")
+        choice = ""
+        while choice != "go":
+            choice = input("Ready?:")
 
     for app in hp.ASYNC_APPS:
         cmd = base_cmd + [app, "--async"]
