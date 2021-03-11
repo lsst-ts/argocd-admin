@@ -17,8 +17,8 @@ def run_cmd(command, as_lines=False):
 
     Parameters
     ----------
-    command : str
-        The command to run. Shoud be space separated.
+    command : list
+        The command to run.
     as_lines : bool, optional
         Return the output as a list instead of a string.
 
@@ -27,7 +27,7 @@ def run_cmd(command, as_lines=False):
     str or list
         The output from the command.
     """
-    output = sp.run(command.split(), stdout=sp.PIPE, stderr=sp.STDOUT)
+    output = sp.run(command, stdout=sp.PIPE, stderr=sp.STDOUT)
     decoded_output = output.stdout.decode("utf-8")
     if as_lines:
         return decoded_output.split(os.linesep)
