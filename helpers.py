@@ -1,15 +1,31 @@
+import asyncio
 import os
 import subprocess as sp
 
 __all__ = [
     "APPS",
     "ASYNC_APPS",
+    "run_async_cmd",
     "run_cmd",
 ]
 
-APPS = ["ospl-daemon", "kafka-producers", "obssys"]
+APPS = [
+    "csc-cluster-config",
+    "ospl-config",
+    "ospl-daemon",
+    "kafka-producers",
+    "obssys"
+]
 
-ASYNC_APPS = ["auxtel", "eas", "maintel"]
+ASYNC_APPS = [
+    "auxtel",
+    "eas",
+    "maintel"
+]
+
+
+async def run_async_cmd(command):
+    pass
 
 
 def run_cmd(command, as_lines=False):
