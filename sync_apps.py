@@ -4,14 +4,23 @@ import asyncio
 import helpers as hp
 
 
-def run_command(command, do_run):
+def run_command(command, no_run):
+    """
+
+    Parameters
+    ----------
+    command : `list`
+        The command to run.
+    no_run : `bool`
+        Flag for deciding if to run the command.
+    """
     print(f"{' '.join(command)}")
-    if not do_run:
+    if not no_run:
         output = hp.run_cmd(command)
         print(output)
 
 
-def main(opts):
+async def main(opts):
     base_cmd = ["argocd", "app", "sync"]
 
     for app in hp.APPS:
@@ -29,8 +38,12 @@ def main(opts):
     for app in hp.ASYNC_APPS:
         cmd = base_cmd + [app]
         run_command(cmd, opts.no_run)
-        cmd = base_cmd + ["-l", f"app.kubernetes.io/instance={app}", "--async"]
-        run_command(cmd, opts.no_run)
+
+    procs = []
+    for app in hp.ASYNC_APPS:
+        cmd = base_cmd + ["-l", f"app.kubernetes.io/instance={app}"]
+        procs.append(hp.run_async_cmd(cmd, opts.no_run))
+    await asyncio.gather(*procs)
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
@@ -39,4 +52,4 @@ if __name__ == '__main__':
 
     args = parser.parse_args()
 
-    main(args)
+    asyncio.run(main(args))

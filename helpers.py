@@ -24,8 +24,25 @@ ASYNC_APPS = [
 ]
 
 
-async def run_async_cmd(command):
-    pass
+async def run_async_cmd(command, no_run):
+    """Run a command asynchronously.
+
+    Parameters
+    ----------
+    command : `list`
+        The command to run.
+    no_run : `bool`
+        Flag for deciding if to run the command.
+    """
+    cmd = " ".join(command)
+    print(cmd)
+    if not no_run:
+        proc = await asyncio.create_subprocess_exec(cmd,
+                                                    stdout=asyncio.subprocess.PIPE,
+                                                    stderr=asyncio.subprocess.STDOUT)
+
+        stdout = await proc.communicate()
+        print(stdout[0].decode("utf-8"))
 
 
 def run_cmd(command, as_lines=False):
@@ -33,9 +50,9 @@ def run_cmd(command, as_lines=False):
 
     Parameters
     ----------
-    command : list
+    command : `list`
         The command to run.
-    as_lines : bool, optional
+    as_lines : `bool`, optional
         Return the output as a list instead of a string.
 
     Returns
