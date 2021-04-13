@@ -5,6 +5,7 @@ import yaml
 
 APPS_DIR = "apps"
 
+
 def main(opts):
     print(f"Updating apps using csc Helm chart to version {opts.chart_version}")
     apps = pathlib.PosixPath(APPS_DIR)
@@ -28,10 +29,15 @@ def main(opts):
         with requirements.open("w") as ofile:
             yaml.dump(values, ofile, sort_keys=False)
 
-if __name__ == '__main__':
+
+if __name__ == "__main__":
     description = ["Update version for apps using the csc Helm chart"]
-    parser = argparse.ArgumentParser(description=" ".join(description),
-                                     formatter_class=argparse.ArgumentDefaultsHelpFormatter)
-    parser.add_argument("chart_version", help="The version of the csc Helm chart to set.")
+    parser = argparse.ArgumentParser(
+        description=" ".join(description),
+        formatter_class=argparse.ArgumentDefaultsHelpFormatter,
+    )
+    parser.add_argument(
+        "chart_version", help="The version of the csc Helm chart to set."
+    )
     args = parser.parse_args()
     main(args)
