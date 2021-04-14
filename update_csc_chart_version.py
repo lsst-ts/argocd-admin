@@ -11,22 +11,22 @@ def main(opts):
     apps = pathlib.PosixPath(APPS_DIR)
     dirlist = list(apps.iterdir())
     for appdir in dirlist:
-        requirements = appdir / "requirements.yaml"
+        chart = appdir / "Chart.yaml"
 
-        if not requirements.exists():
-            continue
-
-        with requirements.open() as ifile:
+        with chart.open() as ifile:
             values = yaml.safe_load(ifile)
 
-        dependencies = values["dependencies"]
+        try:
+            dependencies = values["dependencies"]
+        except KeyError:
+            continue
         for dependency in dependencies:
             if dependency["name"] == "csc":
                 dependency["version"] = opts.chart_version
 
         # print(appdir, values)
 
-        with requirements.open("w") as ofile:
+        with chart.open("w") as ofile:
             yaml.dump(values, ofile, sort_keys=False)
 
 
