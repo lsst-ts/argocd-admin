@@ -40,6 +40,9 @@ def update_tag(values, top_key, update_key, update_value):
 
 
 def main(opts):
+    if opts.ignore_non_ospl:
+        IGNORE_LIST.extend(["love-frontend", "love-manager", "love-nginx"])
+
     if opts.dir_file is not None:
         with open(os.path.expanduser(opts.dir_file)) as ifile:
             dirs = [x.strip() for x in ifile.readlines()]
@@ -128,6 +131,11 @@ if __name__ == "__main__":
     )
     parser.add_argument(
         "--dir-file", help="Provide a file with a list of directories to look at."
+    )
+    parser.add_argument(
+        "--ignore-non-ospl",
+        action="store_true",
+        help="Do not apply parameter to non-OSPL apps.",
     )
     args = parser.parse_args()
 
