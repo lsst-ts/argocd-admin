@@ -29,7 +29,7 @@ async def main(opts):
             run_command(cmd, opts.no_run)
             if app in ["ospl-daemon", "kafka-producers", "obssys"]:
                 if app == "obssys":
-                    cmd = base_cmd + ["-l", f"app.kubernetes.io/instance={app}"]
+                    cmd = base_cmd + ["-l", f"argocd.argoproj.io/instance={app}"]
                     run_command(cmd, opts.no_run)
                 print(f"When the {app} are running, type go to continue.")
                 choice = ""
@@ -42,13 +42,13 @@ async def main(opts):
 
         procs = []
         for app in hp.ASYNC_APPS:
-            cmd = base_cmd + ["-l", f"app.kubernetes.io/instance={app}"]
+            cmd = base_cmd + ["-l", f"argocd.argoproj.io/instance={app}"]
             procs.append(hp.run_async_cmd(cmd, opts.no_run))
         await asyncio.gather(*procs)
     else:
         app = opts.one
         if opts.instance:
-            cmd = base_cmd + ["-l", f"app.kubernetes.io/instance={app}"]
+            cmd = base_cmd + ["-l", f"argocd.argoproj.io/instance={app}"]
         else:
             cmd = base_cmd + [app]
         run_command(cmd, opts.no_run)
