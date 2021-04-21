@@ -21,10 +21,24 @@ def run_command(command, no_run):
 
 
 async def main(opts):
+    apps_to_sync = hp.APPS
+    async_apps_to_sync = hp.ASYNC_APPS
+    if opts.no_sync is not None:
+        remove_apps = opts.no_sync.split(",")
+        for remove_app in remove_apps:
+            try:
+                del apps_to_sync[apps_to_sync.index(remove_app)]
+            except ValueError:
+                pass
+            try:
+                del async_apps_to_sync[async_apps_to_sync.index(remove_app)]
+            except ValueError:
+                pass
+
     base_cmd = ["argocd", "app", "sync"]
 
     if opts.one is None:
-        for app in hp.APPS:
+        for app in apps_to_sync:
             cmd = base_cmd + [app]
             run_command(cmd, opts.no_run)
             if app in ["ospl-daemon", "kafka-producers", "obssys"]:
@@ -36,12 +50,12 @@ async def main(opts):
                 while choice != "go":
                     choice = input("Ready?:")
 
-        for app in hp.ASYNC_APPS:
+        for app in async_apps_to_sync:
             cmd = base_cmd + [app]
             run_command(cmd, opts.no_run)
 
         procs = []
-        for app in hp.ASYNC_APPS:
+        for app in async_apps_to_sync:
             cmd = base_cmd + ["-l", f"argocd.argoproj.io/instance={app}"]
             procs.append(hp.run_async_cmd(cmd, opts.no_run))
         await asyncio.gather(*procs)
@@ -66,6 +80,7 @@ if __name__ == "__main__":
         action="store_true",
         help="Sync the apps belonging to a top-level app.",
     )
+    parser.add_argument("--no-sync", help="List (comma-delimited) of apps not to sync.")
 
     args = parser.parse_args()
 
