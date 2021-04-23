@@ -11,19 +11,37 @@ IGNORE_LIST = [
     "cluster-config",
     "eas",
     "hexapodsim",
+    "love",
     "maintel",
-    "mtm1m3",
-    "mtm2",
     "obssys",
     "ospl-config",
 ]
 
+SAME_AS_DEPLOYMENT = [
+    "kafka-producers",
+    "love-frontend",
+    "love-manager",
+    "love-nginx",
+    "love-producer",
+    "ospl-daemon",
+]
+
+
+def update_tag(values, top_key, update_key, update_value):
+    tags = top_key.split(".")
+    vtt = values[tags[0]]
+    for tag in tags[1:]:
+        vtt = vtt[tag]
+    keys = update_key.split(".")
+    for key in keys[:-1]:
+        vtt = vtt[key]
+
+    vtt[keys[-1]] = update_value
+
 
 def main(opts):
-    if opts.update_m1m3:
-        IGNORE_LIST.remove("mtm1m3")
-    if opts.update_m2:
-        IGNORE_LIST.remove("mtm2")
+    if opts.ignore_non_ospl:
+        IGNORE_LIST.extend(["love-frontend", "love-manager", "love-nginx"])
 
     if opts.dir_file is not None:
         with open(os.path.expanduser(opts.dir_file)) as ifile:
@@ -48,7 +66,7 @@ def main(opts):
         if opts.debug:
             print(appdir)
 
-        if appdir.name == "kafka-producers" or appdir.name == "ospl-daemon":
+        if appdir.name in SAME_AS_DEPLOYMENT:
             top_tag = appdir.name
         else:
             top_tag = "csc"
@@ -62,12 +80,21 @@ def main(opts):
                 with open(appfile) as ifile:
                     values = yaml.safe_load(ifile)
 
-                vtt = values[top_tag]
-                keys = opts.update_key.split(".")
-                for key in keys[:-1]:
-                    vtt = vtt[key]
-
-                vtt[keys[-1]] = opts.update_value
+                if top_tag != "love-nginx":
+                    update_tag(values, top_tag, opts.update_key, opts.update_value)
+                else:
+                    update_tag(
+                        values,
+                        f"{top_tag}.initContainers.frontend",
+                        opts.update_key,
+                        opts.update_value,
+                    )
+                    update_tag(
+                        values,
+                        f"{top_tag}.initContainers.manager",
+                        opts.update_key,
+                        opts.update_value,
+                    )
 
                 if opts.debug and values is not None:
                     print(values)
@@ -103,13 +130,12 @@ if __name__ == "__main__":
         help="Print intermediate information",
     )
     parser.add_argument(
-        "--update-m1m3", action="store_true", help="Allow M1M3 to be updated."
-    )
-    parser.add_argument(
-        "--update-m2", action="store_true", help="Allow M2 to be updated."
-    )
-    parser.add_argument(
         "--dir-file", help="Provide a file with a list of directories to look at."
+    )
+    parser.add_argument(
+        "--ignore-non-ospl",
+        action="store_true",
+        help="Do not apply parameter to non-OSPL apps.",
     )
     args = parser.parse_args()
 

@@ -28,7 +28,7 @@ async def run_async_cmd(command, no_run):
     print(cmd)
     if not no_run:
         proc = await asyncio.create_subprocess_exec(
-            cmd, stdout=asyncio.subprocess.PIPE, stderr=asyncio.subprocess.STDOUT
+            *command, stdout=asyncio.subprocess.PIPE, stderr=asyncio.subprocess.STDOUT
         )
 
         stdout = await proc.communicate()
