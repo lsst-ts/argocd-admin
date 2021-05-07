@@ -5,6 +5,8 @@ import subprocess as sp
 __all__ = [
     "APPS",
     "ASYNC_APPS",
+    "COLLECTOR_APPS",
+    "STANDALONE_APPS",
     "run_async_cmd",
     "run_cmd",
 ]
@@ -19,6 +21,18 @@ APPS = [
 ]
 
 ASYNC_APPS = ["auxtel", "eas", "love", "maintel"]
+
+
+STANDALONE_APPS = [
+    "csc-cluster-config",
+    "ospl-config",
+    "ospl-daemon",
+    "kafka-producers",
+    "ocps",
+]
+
+
+COLLECTOR_APPS = ["auxtel", "eas", "love", "maintel", "obssys"]
 
 
 async def run_async_cmd(command, no_run):
