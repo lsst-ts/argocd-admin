@@ -9,7 +9,14 @@ __all__ = [
     "run_cmd",
 ]
 
-APPS = ["csc-cluster-config", "ospl-config", "ospl-daemon", "kafka-producers", "obssys"]
+APPS = [
+    "csc-cluster-config",
+    "ospl-config",
+    "ospl-daemon",
+    "kafka-producers",
+    "obssys",
+    "ocps",
+]
 
 ASYNC_APPS = ["auxtel", "eas", "love", "maintel"]
 
