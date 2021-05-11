@@ -4,6 +4,48 @@ import os
 import helpers as hp
 
 
+def create_command(app, conf, is_standalone=True):
+    """Create the app creation command.
+
+    Parameters
+    ----------
+    app : `str`
+        The name of the app to create.
+    conf : `SimpleNamespace`
+        The options for the app.
+    is_standalone : bool, optional
+        If the app is standalone or a collector.
+
+    Returns
+    -------
+    `list` of `str`
+        The assembled command line to run.
+    """
+    cmd = [
+        "argocd",
+        "app",
+        "create",
+        "",
+        "--dest-namespace",
+        "argocd",
+        "--dest-server",
+        "https://kubernetes.default.svc",
+        "--repo",
+        "https://github.com/lsst-ts/argocd-csc.git",
+        "--path",
+        "",
+    ]
+    cmd[3] = f"{app}"
+    cmd[11] = f"apps/{app}"
+    if is_standalone:
+        cmd.append("--values")
+        cmd.append(f"values-{conf.env}.yaml")
+    else:
+        cmd.append("--helm-set")
+        cmd.append(f"env={conf.env}")
+    return cmd
+
+
 def run_command(command, no_run):
     """
 
@@ -21,31 +63,28 @@ def run_command(command, no_run):
 
 
 def main(opts):
-    if opts.list is None:
-        apps = hp.APPS + hp.ASYNC_APPS
-    else:
-        apps = opts.list.split(",")
-    cmd = [
-        "argocd",
-        "app",
-        "create",
-        "",
-        "--dest-namespace",
-        "argocd",
-        "--dest-server",
-        "https://kubernetes.default.svc",
-        "--repo",
-        "https://github.com/lsst-ts/argocd-csc.git",
-        "--path",
-        "",
-        "--helm-set",
-        f"env={opts.env}",
-    ]
+    standalone_apps = hp.STANDALONE_APPS
+    collector_apps = hp.COLLECTOR_APPS
 
-    for app in apps:
-        cmd[3] = f"{app}"
-        cmd[11] = f"apps/{app}"
-        run_command(cmd, opts.no_run)
+    if opts.list is not None:
+        apps = opts.list.split(",")
+        tmp_standalone = []
+        tmp_collect = []
+        for app in apps:
+            if app in standalone_apps:
+                tmp_standalone.append(app)
+            if app in collector_apps:
+                tmp_collect.append(app)
+        standalone_apps = tmp_standalone
+        collector_apps = tmp_collect
+
+    for app in standalone_apps:
+        run_cmd = create_command(app, opts)
+        run_command(run_cmd, opts.no_run)
+
+    for app in collector_apps:
+        run_cmd = create_command(app, opts, is_standalone=False)
+        run_command(run_cmd, opts.no_run)
 
 
 if __name__ == "__main__":
