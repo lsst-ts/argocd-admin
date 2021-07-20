@@ -36,6 +36,8 @@ def create_command(app, conf, is_standalone=True):
         "",
     ]
     cmd[3] = f"{app}"
+    if app == "csc-cluster-config":
+        app = app.replace("csc-", "")
     cmd[11] = f"apps/{app}"
     if is_standalone:
         cmd.append("--values")
