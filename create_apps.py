@@ -36,13 +36,11 @@ def create_command(app, conf, is_standalone=True):
         "",
     ]
     cmd[3] = f"{app}"
+    if app == "csc-cluster-config":
+        app = app.replace("csc-", "")
     cmd[11] = f"apps/{app}"
-    if is_standalone:
-        cmd.append("--values")
-        cmd.append(f"values-{conf.env}.yaml")
-    else:
-        cmd.append("--helm-set")
-        cmd.append(f"env={conf.env}")
+    cmd.append("--values")
+    cmd.append(f"values-{conf.env}.yaml")
     return cmd
 
 
