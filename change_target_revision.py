@@ -111,7 +111,8 @@ if __name__ == "__main__":
     )
 
     parser.add_argument(
-        "--list", help="Provide a comma-delimited list of apps to create."
+        "--list",
+        help="Provide a comma-delimited list of apps to change the targetRevision.",
     )
 
     parser.add_argument(
