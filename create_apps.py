@@ -4,7 +4,7 @@ import os
 import helpers as hp
 
 
-def create_command(app, conf, is_standalone=True):
+def create_command(app, conf):
     """Create the app creation command.
 
     Parameters
@@ -13,8 +13,6 @@ def create_command(app, conf, is_standalone=True):
         The name of the app to create.
     conf : `SimpleNamespace`
         The options for the app.
-    is_standalone : bool, optional
-        If the app is standalone or a collector.
 
     Returns
     -------
@@ -25,7 +23,7 @@ def create_command(app, conf, is_standalone=True):
         "argocd",
         "app",
         "create",
-        "",
+        f"{app}",
         "--dest-namespace",
         "argocd",
         "--dest-server",
@@ -35,7 +33,6 @@ def create_command(app, conf, is_standalone=True):
         "--path",
         "",
     ]
-    cmd[3] = f"{app}"
     if app == "csc-cluster-config":
         app = app.replace("csc-", "")
     cmd[11] = f"apps/{app}"
@@ -61,27 +58,14 @@ def run_command(command, no_run):
 
 
 def main(opts):
-    standalone_apps = hp.STANDALONE_APPS
-    collector_apps = hp.COLLECTOR_APPS
 
     if opts.list is not None:
         apps = opts.list.split(",")
-        tmp_standalone = []
-        tmp_collect = []
-        for app in apps:
-            if app in standalone_apps:
-                tmp_standalone.append(app)
-            if app in collector_apps:
-                tmp_collect.append(app)
-        standalone_apps = tmp_standalone
-        collector_apps = tmp_collect
+    else:
+        apps = hp.STANDALONE_APPS + hp.COLLECTOR_APPS
 
-    for app in standalone_apps:
+    for app in apps:
         run_cmd = create_command(app, opts)
-        run_command(run_cmd, opts.no_run)
-
-    for app in collector_apps:
-        run_cmd = create_command(app, opts, is_standalone=False)
         run_command(run_cmd, opts.no_run)
 
 
