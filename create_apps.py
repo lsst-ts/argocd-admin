@@ -19,6 +19,11 @@ def create_command(app, conf):
     `list` of `str`
         The assembled command line to run.
     """
+    if app == "csc-cluster-config":
+        app_dir = app.replace("csc-", "")
+    else:
+        app_dir = app
+
     cmd = [
         "argocd",
         "app",
@@ -30,14 +35,14 @@ def create_command(app, conf):
         "https://kubernetes.default.svc",
         "--repo",
         "https://github.com/lsst-ts/argocd-csc.git",
+        "--revision",
+        f"{conf.revision}",
         "--path",
-        "",
+        f"apps/{app_dir}",
+        "--values",
+        f"values-{conf.env}.yaml"
     ]
-    if app == "csc-cluster-config":
-        app = app.replace("csc-", "")
-    cmd[11] = f"apps/{app}"
-    cmd.append("--values")
-    cmd.append(f"values-{conf.env}.yaml")
+
     return cmd
 
 
@@ -87,6 +92,12 @@ if __name__ == "__main__":
     )
     parser.add_argument(
         "--list", help="Provide a comma-delimited list of apps to create."
+    )
+
+    parser.add_argument(
+        "--revision",
+        default="HEAD",
+        help="Provide the git branch against which the app will be created. Default is HEAD.",
     )
 
     args = parser.parse_args()
