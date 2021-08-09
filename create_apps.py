@@ -40,8 +40,12 @@ def create_command(app, conf):
         "--path",
         f"apps/{app_dir}",
         "--values",
-        f"values-{conf.env}.yaml"
+        f"values-{conf.env}.yaml",
     ]
+    if conf.use_port_forward:
+        cmd.append("--port-forward")
+        cmd.append("--port-forward-namespace")
+        cmd.append("argocd")
 
     return cmd
 
@@ -76,7 +80,7 @@ def main(opts):
 
 if __name__ == "__main__":
     description = ["Create argocd app. The current apps are:"]
-    apps = hp.APPS + hp.ASYNC_APPS
+    apps = hp.STANDALONE_APPS + hp.COLLECTOR_APPS
     for app in apps:
         description.append(f"   {app}")
     parser = argparse.ArgumentParser(
@@ -98,6 +102,13 @@ if __name__ == "__main__":
         "--revision",
         default="HEAD",
         help="Provide the git branch against which the app will be created. Default is HEAD.",
+    )
+
+    parser.add_argument(
+        "-p",
+        "--use-port-forward",
+        action="store_true",
+        help="Use port-forwarding in the command call.",
     )
 
     args = parser.parse_args()
