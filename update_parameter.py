@@ -33,8 +33,11 @@ def update_tag(values, top_key, update_key, update_value):
     for tag in tags[1:]:
         vtt = vtt[tag]
     keys = update_key.split(".")
-    for key in keys[:-1]:
-        vtt = vtt[key]
+    try:
+        for key in keys[:-1]:
+            vtt = vtt[key]
+    except KeyError:
+        return
 
     vtt[keys[-1]] = update_value
 
