@@ -73,6 +73,12 @@ def run_command(command, no_run):
         return output[:-1]
 
 
+def port_forward_command(cmd):
+    cmd.append("--port-forward")
+    cmd.append("--port-forward-namespace")
+    cmd.append("argocd")
+    return cmd
+
 async def main(opts):
     """
     Parameters
@@ -90,16 +96,21 @@ async def main(opts):
     procs = []
     for app in apps:
         run_cmd = create_patch_command(app, patch_dict)
+        if opts.use_port_forward:
+            run_cmd = port_forward_command(run_cmd)
         procs.append(hp.run_async_cmd(run_cmd, opts.no_run))
         if app in hp.COLLECTOR_APPS and not opts.no_run:
             run_cmd = create_list_command(app)
+            if opts.use_port_forward:
+                run_cmd = port_forward_command(run_cmd)
             child_apps = run_command(run_cmd, False)
             for child_app in child_apps:
                 run_cmd = create_patch_command(child_app, patch_dict)
+                if opts.use_port_forward:
+                    run_cmd = port_forward_command(run_cmd)
                 procs.append(hp.run_async_cmd(run_cmd, opts.no_run))
-    if not opts.no_run:
-        await asyncio.gather(*procs)
 
+    await asyncio.gather(*procs)
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
@@ -117,6 +128,13 @@ if __name__ == "__main__":
 
     parser.add_argument(
         "--no-run", action="store_true", help="Do not run the commands."
+    )
+
+    parser.add_argument(
+        "-p",
+        "--use-port-forward",
+        action="store_true",
+        help="Use port-forwarding in the command call.",
     )
 
     args = parser.parse_args()

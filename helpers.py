@@ -54,6 +54,8 @@ async def run_async_cmd(command, no_run):
 
         stdout = await proc.communicate()
         print(stdout[0].decode("utf-8"))
+    else:
+        await asyncio.sleep(0)
 
 
 def run_cmd(command, as_lines=False):
