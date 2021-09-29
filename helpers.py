@@ -17,10 +17,9 @@ APPS = [
     "ospl-daemon",
     "kafka-producers",
     "obssys",
-    "ocps",
 ]
 
-ASYNC_APPS = ["auxtel", "eas", "love", "maintel"]
+ASYNC_APPS = ["auxtel", "dmocps", "eas", "love", "maintel"]
 
 
 STANDALONE_APPS = [
@@ -28,11 +27,10 @@ STANDALONE_APPS = [
     "ospl-config",
     "ospl-daemon",
     "kafka-producers",
-    "ocps",
 ]
 
 
-COLLECTOR_APPS = ["auxtel", "eas", "love", "maintel", "obssys"]
+COLLECTOR_APPS = ["auxtel", "dmocps", "eas", "love", "maintel", "obssys"]
 
 
 async def run_async_cmd(command, no_run):

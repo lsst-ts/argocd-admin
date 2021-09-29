@@ -36,6 +36,8 @@ async def main(opts):
                 pass
 
     base_cmd = ["argocd", "app", "sync"]
+    if opts.use_port_forward:
+        base_cmd.extend(["--port-forward", "--port-forward-namespace", "argocd"])
 
     if opts.one is None:
         for app in apps_to_sync:
@@ -81,6 +83,13 @@ if __name__ == "__main__":
         help="Sync the apps belonging to a top-level app.",
     )
     parser.add_argument("--no-sync", help="List (comma-delimited) of apps not to sync.")
+
+    parser.add_argument(
+        "-p",
+        "--use-port-forward",
+        action="store_true",
+        help="Use port-forwarding in the command call.",
+    )
 
     args = parser.parse_args()
 
