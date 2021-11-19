@@ -9,6 +9,7 @@ APPS_DIR = "apps"
 IGNORE_LIST = [
     "auxtel",
     "cluster-config",
+    "dmocps",
     "eas",
     "hexapodsim",
     "love",
