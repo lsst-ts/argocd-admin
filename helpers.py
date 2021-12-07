@@ -6,6 +6,7 @@ __all__ = [
     "APPS",
     "ASYNC_APPS",
     "COLLECTOR_APPS",
+    "SINGLE_APPS",
     "STANDALONE_APPS",
     "run_async_cmd",
     "run_cmd",
@@ -29,6 +30,7 @@ STANDALONE_APPS = [
     "kafka-producers",
 ]
 
+SINGLE_APPS = ["test42"]
 
 COLLECTOR_APPS = ["auxtel", "dmocps", "eas", "love", "maintel", "obssys"]
 
