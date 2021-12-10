@@ -25,6 +25,7 @@ SAME_AS_DEPLOYMENT = [
     "love-nginx",
     "love-producer",
     "ospl-daemon",
+    "ospl-main-daemon",
 ]
 
 
