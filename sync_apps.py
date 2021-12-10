@@ -52,7 +52,7 @@ async def main(opts):
                 while choice != "go":
                     choice = input("Ready?:")
 
-        for app in async_apps_to_sync:
+        for app in async_apps_to_sync + hp.SINGLE_APPS:
             cmd = base_cmd + [app]
             run_command(cmd, opts.no_run)
 
