@@ -105,9 +105,6 @@ if __name__ == "__main__":
         action="store_true",
         help="Use port-forwarding in the command call.",
     )
-    parser.add_argument(
-        "-t", "--tucson", action="store_true", help="Use TTS configuration."
-    )
 
     args = parser.parse_args()
 
