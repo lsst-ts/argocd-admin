@@ -79,6 +79,7 @@ def port_forward_command(cmd):
     cmd.append("argocd")
     return cmd
 
+
 async def main(opts):
     """
     Parameters
@@ -111,6 +112,7 @@ async def main(opts):
                 procs.append(hp.run_async_cmd(run_cmd, opts.no_run))
 
     await asyncio.gather(*procs)
+
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
