@@ -45,11 +45,24 @@ async def main(opts):
         for app in apps_to_sync:
             cmd = base_cmd + [app]
             run_command(cmd, opts.no_run)
-            if app in ["ospl-main-daemon", "ospl-daemon", "kafka-producers", "obssys"]:
-                if app == "obssys":
+            if app in [
+                "ospl-main-daemon",
+                "ospl-daemon",
+                "kafka-producers",
+                "love",
+                "obssys",
+            ]:
+                if app in ["obssys", "love"]:
                     cmd = base_cmd + ["-l", f"argocd.argoproj.io/instance={app}"]
                     run_command(cmd, opts.no_run)
-                print(f"When the {app} are running, type go to continue.")
+                    wording = f"{app} apps are"
+                if app == "ospl-main-daemon":
+                    wording = f"{app} is"
+                if app == "ospl-daemon":
+                    wording = f"{app}s are"
+                if app == "kafka-producers":
+                    wording = f"{app} are"
+                print(f"When the {wording} running, type go to continue.")
                 choice = ""
                 while choice != "go":
                     choice = input("Ready?:")
