@@ -22,6 +22,8 @@ def run_command(command, no_run):
 
 async def main(opts):
     apps_to_sync = hp.APPS
+    if opts.tucson:
+        apps_to_sync.insert(2, "ospl-main-daemon")
     async_apps_to_sync = hp.ASYNC_APPS
     if opts.no_sync is not None:
         remove_apps = opts.no_sync.split(",")
@@ -43,7 +45,7 @@ async def main(opts):
         for app in apps_to_sync:
             cmd = base_cmd + [app]
             run_command(cmd, opts.no_run)
-            if app in ["ospl-daemon", "kafka-producers", "obssys"]:
+            if app in ["ospl-main-daemon", "ospl-daemon", "kafka-producers", "obssys"]:
                 if app == "obssys":
                     cmd = base_cmd + ["-l", f"argocd.argoproj.io/instance={app}"]
                     run_command(cmd, opts.no_run)
@@ -89,6 +91,9 @@ if __name__ == "__main__":
         "--use-port-forward",
         action="store_true",
         help="Use port-forwarding in the command call.",
+    )
+    parser.add_argument(
+        "-t", "--tucson", action="store_true", help="Use TTS configuration."
     )
 
     args = parser.parse_args()
