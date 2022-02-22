@@ -17,10 +17,11 @@ APPS = [
     "ospl-config",
     "ospl-daemon",
     "kafka-producers",
+    "love",
     "obssys",
 ]
 
-ASYNC_APPS = ["auxtel", "dmocps", "eas", "love", "maintel"]
+ASYNC_APPS = ["auxtel", "dmocps", "eas", "maintel"]
 
 
 STANDALONE_APPS = [
