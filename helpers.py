@@ -21,7 +21,7 @@ APPS = [
     "obssys",
 ]
 
-ASYNC_APPS = ["auxtel", "dmocps", "eas", "maintel"]
+ASYNC_APPS = ["auxtel", "calsys", "dmocps", "eas", "maintel"]
 
 
 STANDALONE_APPS = [
@@ -33,7 +33,7 @@ STANDALONE_APPS = [
 
 SINGLE_APPS = ["test42"]
 
-COLLECTOR_APPS = ["auxtel", "dmocps", "eas", "love", "maintel", "obssys"]
+COLLECTOR_APPS = ["auxtel", "calsys", "dmocps", "eas", "love", "maintel", "obssys"]
 
 
 async def run_async_cmd(command, no_run):
