@@ -8,6 +8,7 @@ APPS_DIR = "apps"
 
 IGNORE_LIST = [
     "auxtel",
+    "calsys",
     "cluster-config",
     "dmocps",
     "eas",
